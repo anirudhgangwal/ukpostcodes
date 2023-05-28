@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "ukpostcodes"
+name = "uk_postcodes_parsing"
 version = "0.0.1"
 authors = [
   { name="Anirudh Gangwal", email="angangwa@amazon.com" },

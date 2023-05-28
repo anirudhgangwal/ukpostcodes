@@ -3,8 +3,8 @@ import logging
 from dataclasses import dataclass
 from typing import Union, List
 
-from ukpostcodes.postcode_utils import *
-from ukpostcodes.fix import fix
+from uk_postcodes_parsing.postcode_utils import *
+from uk_postcodes_parsing.fix import fix
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger('ukpostcode')
