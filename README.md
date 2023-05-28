@@ -34,6 +34,7 @@ INFO:uk-postcodes-parsing:Found 3 postcodes in corpus
 - Parsing
 
 ```python
+>>> from uk_postcodes_parsing.ukpostcode import parse
 >>> parse("EC1r 1ub")
 Postcode(original='ec1r 1ub', postcode='EC1R 1UB', incode='1UB', outcode='EC1R', area='EC', district='EC1', sub_district='EC1R', sector='EC1R 1', unit='UB')
 >>> parse("EH16 50Y", attempt_fix=True)
