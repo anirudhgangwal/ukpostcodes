@@ -6,7 +6,11 @@ A Python package to parge UK postcodes from text. Useful in applications such as
 
 Example usage:
 
-`pip install ukpostcodes`
+```bash
+git clone https://github.com/anirudhgangwal/ukpostcodes.git
+cd ukpostcodes
+pip install .
+``` 
 
 ```python
 from ukpostcodes import parse_from_corpus
