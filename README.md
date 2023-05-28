@@ -40,6 +40,9 @@ Postcode(original='ec1r 1ub', postcode='EC1R 1UB', incode='1UB', outcode='EC1R',
 >>> parse("EH16 50Y", attempt_fix=True)
 INFO:ukpostcode:Postcode Fixed: 'eh16 50y' => 'EH16 5OY'
 Postcode(original='eh16 50y', postcode='EH16 5OY', incode='5OY', outcode='EH16', area='EH', district='EH16', sub_district=None, sector='EH16 5', unit='OY')
+>>> parse("0W1") 
+ERROR:ukpostcode:Unable to fix postcode
+ERROR:ukpostcode:Failed to parse postcode
 ```
 
 - Fixing
