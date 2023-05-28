@@ -47,5 +47,5 @@ Postcode(original='eh16 50y', postcode='EH16 5OY', incode='5OY', outcode='EH16',
 ```python
 >>> from uk_postcodes_parsing.fix import fix
 >>> fix("0W1 OAA") 
-OW1 0AA
+'OW1 0AA'
 ```
