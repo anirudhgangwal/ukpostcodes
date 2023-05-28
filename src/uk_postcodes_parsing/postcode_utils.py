@@ -35,7 +35,6 @@ def to_normalised(postcode: str) -> Union[str, None]:
     incode = to_incode(postcode)
     return None if incode is None else f'{outcode} {incode}'
 
-
 def to_outcode(postcode: str) -> Union[str, None]:
     if not is_valid(postcode):
         return None
@@ -48,16 +47,6 @@ def to_incode(postcode: str) -> Union[str, None]:
     return incode[0] if incode else None
 
 def to_area(postcode: str) -> Union[str, None]:
-    """
-    Returns a correctly formatted area given a postcode
-
-    Args:
-        postcode: The postcode to get the area of
-
-    Returns:
-        The area, or `None` if the postcode is invalid
-    """
-
     if not is_valid(postcode):
         return None
     area = re.findall(AREA_REGEX, sanitize(postcode))
@@ -69,7 +58,6 @@ def to_sector(postcode: str) -> Union[str, None]:
         return None
     incode = to_incode(postcode)
     return None if incode is None else f'{outcode} {incode[0]}'
-
 
 def to_unit(postcode: str) -> Union[str, None]:
     if not is_valid(postcode):

@@ -1,5 +1,5 @@
-from ukpostcodes.fix import fix
-from ukpostcodes.ukpostcode import parse_from_corpus, Postcode
+from uk_postcodes_parsing.fix import fix
+from uk_postcodes_parsing.ukpostcode import parse_from_corpus, Postcode
 
 #TODO - covert to actual tests
 

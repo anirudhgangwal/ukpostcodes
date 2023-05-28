@@ -7,7 +7,7 @@ from uk_postcodes_parsing.postcode_utils import *
 from uk_postcodes_parsing.fix import fix
 
 logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger('ukpostcode')
+logger = logging.getLogger('uk-postcodes-parsing')
 
 # Test for a valid postcode embedded in text
 POSTCODE_CORPUS_REGEX = re.compile(r'[a-z]{1,2}\d[a-z\d]?\s*\d[a-z]{2}', re.I)
