@@ -22,7 +22,7 @@ INFO:ukpostcode:Postcode Fixed: 'eh16 50y' => 'EH16 5OY'
 [Postcode(original='ec1r 1ub', postcode='EC1R 1UB', incode='1UB', outcode='EC1R', area='EC', district='EC1', sub_district='EC1R', sector='EC1R 1', unit='UB'), Postcode(original='e34ss', postcode='E3 4SS', incode='4SS', outcode='E3', area='E', district='E3', sub_district=None, sector='E3 4', unit='SS'), Postcode(original='eh16 50y', postcode='EH16 5OY', incode='5OY', outcode='EH16', area='EH', district='EH16', sub_district=None, sector='EH16 5', unit='OY')]
 ```
 
-- Optional auto-correct: Attempy correcting common mistakes in postcodes such as reading "O" and "0" and vice-versa.
+- Optional auto-correct: Attempt correcting common mistakes in postcodes such as reading "O" and "0" and vice-versa.
 
 ```python
 from uk_postcodes_parsing.ukpostcode import parse_from_corpus, Postcode
