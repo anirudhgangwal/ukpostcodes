@@ -45,6 +45,16 @@ ERROR:ukpostcode:Unable to fix postcode
 ERROR:ukpostcode:Failed to parse postcode
 ```
 
+- Validity check
+
+```python
+>>> from uk_postcodes_parsing.postcode_utils import is_valid
+>>> is_valid("0W1 0AA")
+False
+>>> is_valid("OW1 0AA")
+True
+```
+
 - Fixing
 
 ```python
