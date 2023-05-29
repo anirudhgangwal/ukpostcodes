@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - 'tests/**'
-      - 'src/ukpostcodes/**'
+      - 'src/uk_postcodes_parsing/**'
   workflow_dispatch:
 
 jobs:
