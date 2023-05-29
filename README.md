@@ -5,11 +5,30 @@
 
 A Python package to parge UK postcodes from text. Useful in applications such as OCR and IDP.
 
-Install:
+## Install
 
 ```bash
 pip install uk-postcodes-parsing
-``` 
+```
+
+## Capabilities
+
+- Search and parse UK postcode from text/OCR results
+  - Extract parts of the postcode: incode, outcode etc.  
+
+
+| Postcode | .outcode | .incode | .area | .district | .subDistrict | .sector | .unit |
+|----------|----------|---------|-------|-----------|--------------|---------|-------|
+| AA9A 9AA | AA9A     | 9AA     | AA    | AA9       | AA9A         | AA9A 9  | AA    |
+| A9A 9AA  | A9A      | 9AA     | A     | A9        | A9A          | A9A 9   | AA    |
+| A9 9AA   | A9       | 9AA     | A     | A9        | `None`       | A9 9    | AA    |
+| A99 9AA  | A99      | 9AA     | A     | A99       | `None`       | A99 9   | AA    |
+| AA9 9AA  | AA9      | 9AA     | AA    | AA9       | `None`       | AA9 9   | AA    |
+| AA99 9AA | AA99     | 9AA     | AA    | AA99      | `None`       | AA99 9  | AA    |  
+
+- Fix common mistakes in UK postcode
+- Utilities to validate postcode
+
 
 ## Usage
 
@@ -40,12 +59,18 @@ INFO:uk-postcodes-parsing:Found 3 postcodes in corpus
 >>> from uk_postcodes_parsing import ukpostcode
 >>> ukpostcode.parse("EC1r 1ub")
 Postcode(original='ec1r 1ub', postcode='EC1R 1UB', incode='1UB', outcode='EC1R', area='EC', district='EC1', sub_district='EC1R', sector='EC1R 1', unit='UB')
->>> ukpostcode.parse("EH16 50Y", attempt_fix=True)
-INFO:ukpostcode:Postcode Fixed: 'eh16 50y' => 'EH16 5OY'
+```
+```python
+>>> ukpostcode.parse("EH16 50Y")
+INFO:uk-postcodes-parsing:Postcode Fixed: 'eh16 50y' => 'EH16 5OY'
 Postcode(original='eh16 50y', postcode='EH16 5OY', incode='5OY', outcode='EH16', area='EH', district='EH16', sub_district=None, sector='EH16 5', unit='OY')
+```
+```python
+>>> ukpostcode.parse("EH16 50Y", attempt_fix=False) # Don't attempt fixes during parsing
+ERROR:uk-postcodes-parsing:Failed to parse postcode
 >>> ukpostcode.parse("0W1") 
-ERROR:ukpostcode:Unable to fix postcode
-ERROR:ukpostcode:Failed to parse postcode
+ERROR:uk-postcodes-parsing:Unable to fix postcode
+ERROR:uk-postcodes-parsing:Failed to parse postcode
 ```
 
 - Validity check
@@ -65,3 +90,13 @@ True
 >>> fix("0W1 OAA") 
 'OW1 0AA'
 ```
+
+# Testing
+
+```bash
+pytest tests/
+```
+
+## Similar works
+
+Most of this work is based on this JavaScript library: https://github.com/ideal-postcodes/postcode
