@@ -5,6 +5,7 @@ on:
     paths:
       - 'tests/**'
       - 'src/ukpostcodes/**'
+  workflow_dispatch:
 
 jobs:
   Quality-checks:
