@@ -29,3 +29,6 @@ lint = [ "black"]
 addopts = [
     "--import-mode=importlib",
 ]
+testpaths = [
+    "tests/",
+]

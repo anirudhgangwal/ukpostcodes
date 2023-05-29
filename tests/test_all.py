@@ -1,6 +1,7 @@
-import sys
+import pandas as pd
 
 from uk_postcodes_parsing.fix import fix
+from uk_postcodes_parsing import ukpostcode
 from uk_postcodes_parsing.ukpostcode import parse_from_corpus, Postcode
 
 
@@ -113,3 +114,18 @@ def test_parsing():
             unit="OY",
         ),
     ]
+
+def test_parsing_detailed():
+    df = pd.read_csv("tests/data/postcode_parse_test.csv")
+    df = df.where(pd.notnull(df), None)
+
+    parsed_postcodes = df["Postcode"].apply(ukpostcode.parse)
+
+    for i, parsed_postcode in enumerate(parsed_postcodes):
+        assert parsed_postcode.outcode == df.iloc[i][".outcode"]
+        assert parsed_postcode.incode == df.iloc[i][".incode"]
+        assert parsed_postcode.area == df.iloc[i][".area"]
+        assert parsed_postcode.district == df.iloc[i][".district"]
+        assert parsed_postcode.sub_district == df.iloc[i][".subDistrict"]
+        assert parsed_postcode.sector == df.iloc[i][".sector"]
+        assert parsed_postcode.unit == df.iloc[i][".unit"]
