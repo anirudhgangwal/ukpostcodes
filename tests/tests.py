@@ -1,5 +1,8 @@
-from uk_postcodes_parsing.fix import fix
-from uk_postcodes_parsing.ukpostcode import parse_from_corpus, Postcode
+import sys
+sys.path.append("src/uk_postcodes_parsing")
+
+from fix import fix
+from ukpostcode import parse_from_corpus, Postcode
 
 #TODO - covert to actual tests
 
@@ -43,8 +46,8 @@ def test_fix():
     # third character
     assert fix("SW1A 2A0") == "SW1A 2AO"
     # 1 <=> I
-    assert fix("SWIA 2AA") == "SW1A 2AA" 
-    assert fix("1W1A 2AA") == "IW1A 2AA" 
+    assert fix("SWIA 2AA") == "SW1A 2AA"
+    assert fix("1W1A 2AA") == "IW1A 2AA"
 
 def test_parsing():
     corpus = "this is a check to see if we can get post codes liek thia ec1r   1ub , and that e3 4ss. But also eh16 50y and ei412"          
@@ -61,6 +64,3 @@ def test_parsing():
         Postcode(original='e34ss', postcode='E3 4SS', incode='4SS', outcode='E3', area='E', district='E3', sub_district=None, sector='E3 4', unit='SS'), 
         Postcode(original='eh16 50y', postcode='EH16 5OY', incode='5OY', outcode='EH16', area='EH', district='EH16', sub_district=None, sector='EH16 5', unit='OY')
         ]
-
-test_fix()
-test_parsing()

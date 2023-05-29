@@ -17,6 +17,15 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+[project.optional-dependencies]
+test = ["pytest", "pytest-cov"]
+lint = [ "black"]
+
 [project.urls]
 "Homepage" = "https://github.com/anirudhgangwal/ukpostcodes"
 "Bug Tracker" = "https://github.com/anirudhgangwal/ukpostcodes/issues"
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
