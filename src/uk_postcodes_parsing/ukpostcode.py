@@ -17,6 +17,8 @@ FIXABLE_POSTCODE_CORPUS_REGEX = re.compile(
 
 
 def _parse(postcode: str) -> dict:
+    if postcode.upper().startswith("NPT"): # Edge case logging
+        logger.info("Found 'NPT' Newport postcode discontinued in 1984.")
     if not is_valid(postcode):
         return None
     return {
