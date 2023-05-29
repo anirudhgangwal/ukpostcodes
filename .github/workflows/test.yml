@@ -1,15 +1,17 @@
 name: Test
 
-on: [push]
+on: 
+  push:
+    paths:
+      - 'tests/**'
+      - 'src/ukpostcodes/**'
 
 jobs:
-  build:
-
+  Quality-checks:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
-
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
@@ -22,7 +24,7 @@ jobs:
           pip install .
           pip install black pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      - name: Lint with ruff
+      - name: Lint check with black
         run: |
           black src/uk_postcodes_parsing/ --check 
       - name: Test with pytest
