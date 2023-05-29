@@ -115,6 +115,7 @@ def test_parsing():
         ),
     ]
 
+
 def test_parsing_detailed():
     df = pd.read_csv("tests/data/postcode_parse_test.csv")
     df = df.where(pd.notnull(df), None)
