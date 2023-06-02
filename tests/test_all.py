@@ -77,7 +77,7 @@ def test_parsing():
         ),
     ]
 
-    corpus = "this is a check to see if we can get post codes liek thia ec1r 1ub , and that e34ss. But also eh16 50y and ei412"
+    corpus = "this is a check to see if we can get post codes liek thia ec1r 1ub , and that e34ss. But also eh16 50y and ei412. followed by ehi6 50y"
     lst = parse_from_corpus(corpus, attempt_fix=True)
     assert lst == [
         Postcode(
@@ -113,6 +113,17 @@ def test_parsing():
             sector="EH16 5",
             unit="OY",
         ),
+        Postcode(
+            original="ehi6 50y",
+            postcode="EH16 5OY",
+            incode="5OY",
+            outcode="EH16",
+            area="EH",
+            district="EH16",
+            sub_district=None,
+            sector="EH16 5",
+            unit="OY",
+        ),
     ]
 
 
@@ -130,3 +141,54 @@ def test_parsing_detailed():
         assert parsed_postcode.sub_district == df.iloc[i][".subDistrict"]
         assert parsed_postcode.sector == df.iloc[i][".sector"]
         assert parsed_postcode.unit == df.iloc[i][".unit"]
+
+
+def test_sort_by_fix_distance():
+    corpus = "this EC1r 1ub followed by to one, ecir iub e0 i00"
+    lst = parse_from_corpus(corpus, attempt_fix=True)
+    assert sorted(lst, reverse=True) == [
+        Postcode(  # distance=3
+            original="e0 i00",
+            postcode="E0 1OO",
+            incode="1OO",
+            outcode="E0",
+            area="E",
+            district="E0",
+            sub_district=None,
+            sector="E0 1",
+            unit="OO",
+        ),
+        Postcode(  # distance=2
+            original="to one",
+            postcode="T0 0NE",
+            incode="0NE",
+            outcode="T0",
+            area="T",
+            district="T0",
+            sub_district=None,
+            sector="T0 0",
+            unit="NE",
+        ),
+        Postcode(  # distance=2
+            original="ecir iub",
+            postcode="EC1R 1UB",
+            incode="1UB",
+            outcode="EC1R",
+            area="EC",
+            district="EC1",
+            sub_district="EC1R",
+            sector="EC1R 1",
+            unit="UB",
+        ),
+        Postcode(  # distance=0
+            original="ec1r 1ub",
+            postcode="EC1R 1UB",
+            incode="1UB",
+            outcode="EC1R",
+            area="EC",
+            district="EC1",
+            sub_district="EC1R",
+            sector="EC1R 1",
+            unit="UB",
+        ),
+    ]
