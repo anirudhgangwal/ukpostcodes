@@ -4,8 +4,6 @@ postcode_utils.py: Utilities for working with postcodes.
 import re
 from typing import Union
 
-import requests
-
 # Tests for district
 DISTRICT_SPLIT_REGEX = re.compile(r"^([a-z]{1,2}\d)([a-z])$", re.I)
 
@@ -56,19 +54,6 @@ def is_valid_outcode(outcode: str) -> bool:
         bool: True if the postcode is valid, False otherwise
     """
     return re.match(OUTCODE_REGEX, outcode) is not None
-
-
-def check_with_postcode_io(postcode: str) -> bool:
-    """Check if the postcode is valid with postcodes.io
-
-    Args:
-        postcode (str): The postcode to check
-
-    Returns:
-        bool: True if the postcode is valid, False otherwise
-    """
-    response = requests.get(f"https://api.postcodes.io/postcodes/{postcode}").json()
-    return response["status"] == 200
 
 
 def to_normalised(postcode: str) -> Union[str, None]:

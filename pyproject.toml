@@ -4,12 +4,11 @@ build-backend = "hatchling.build"
 
 [project]
 name = "uk_postcodes_parsing"
-version = "0.0.4"
+version = "0.2.0"
 authors = [
   { name="Anirudh Gangwal", email="angangwa@amazon.com" },
 ]
-dependencies = ["requests"]
-description = "A Python package to parge UK postcodes from text. Useful in applications such as OCR and IDP."
+description = "A Python package to parse UK postcodes from text. Useful in applications such as OCR and IDP."
 readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [

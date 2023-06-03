@@ -6,11 +6,8 @@ import logging
 from dataclasses import dataclass, field
 from typing import Union, List, Optional
 
-import requests
-
 from uk_postcodes_parsing.postcode_utils import (
     is_valid,
-    check_with_postcode_io,
     to_normalised,
     to_outcode,
     to_incode,
@@ -21,6 +18,7 @@ from uk_postcodes_parsing.postcode_utils import (
     to_sub_district,
 )
 from uk_postcodes_parsing.fix import fix
+from uk_postcodes_parsing.postcodes_nov_2022 import POSTCODE_NOV_2022
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("uk-postcodes-parsing")
@@ -47,14 +45,13 @@ class Postcode:
         unit (str): The unit of the postcode.
 
     Additional attributes:
-        verified_against_postcode_io (bool): Whether the postcode was successfully verified against
-            postcode [api.postcodes.io/postcodes/](https://postcodes.io/) which uses the
+        is_in_ons_postcode_directory (bool): Whether the postcode was successfully verified against
             [ONS Postcode Directory](https://geoportal.statistics.gov.uk/datasets/489c152010a3425f80a71dc3663f73e1/about).
         fix_distance (int): The number of characters that the postcode string was corrected by the `fix` function during parsing.
     """
 
     # Calculate post initialization
-    verified_against_postcode_io: bool = field(init=False)
+    is_in_ons_postcode_directory: bool = field(init=False)
     fix_distance: int = field(init=False)
     # raw text
     original: str
@@ -70,7 +67,7 @@ class Postcode:
 
     def __post_init__(self):
         """calculate class attributes after initialization.
-        - `verified_against_postcode_io` (bool)
+        - `is_in_ons_postcode_directory` (bool)
         - `fix_distance` (int): the "edit distance" between the raw postcode and final postcode
         """
         # Convert raw (original) string in postcode format
@@ -80,15 +77,12 @@ class Postcode:
         formatted = f"{outward} {inward}"
 
         fix_distance = sum(c1 != c2 for c1, c2 in zip(formatted, self.postcode))
-        self.fix_distance = fix_distance
 
-        try:
-            self.verified_against_postcode_io = check_with_postcode_io(self.postcode)
-        except requests.exceptions.RequestException:
-            logger.error("Failed to check postcode against postcode.io")
+        self.fix_distance = fix_distance
+        self.is_in_ons_postcode_directory = is_in_ons_postcode_directory(self.postcode)
 
     def __eq__(self, other):
-        """Ignore verified_against_postcode_io and fix_distance."""
+        """Ignore is_in_ons_postcode_directory and fix_distance."""
         return (
             self.original == other.original
             and self.postcode == other.postcode
@@ -163,3 +157,15 @@ def parse_from_corpus(text: str, attempt_fix=False) -> List[str]:
         postcodes = re.findall(POSTCODE_CORPUS_REGEX, text.lower())
     logger.info("Found %d postcodes in corpus", len(postcodes))
     return list(map(parse, postcodes))
+
+
+def is_in_ons_postcode_directory(postcode: str) -> bool:
+    """Check if the postcode is valid with postcodes.io
+
+    Args:
+        postcode (str): The postcode to check
+
+    Returns:
+        bool: True if the postcode is valid, False otherwise
+    """
+    return postcode in POSTCODE_NOV_2022
