@@ -15,6 +15,7 @@ pip install uk-postcodes-parsing
 
 - Search and parse UK postcode from text/OCR results
   - Extract parts of the postcode: incode, outcode etc.  
+  - Fix common mistakes in UK postcode OCR
 
 
 | Postcode | .outcode | .incode | .area | .district | .subDistrict | .sector | .unit |
@@ -26,8 +27,9 @@ pip install uk-postcodes-parsing
 | AA9 9AA  | AA9      | 9AA     | AA    | AA9       | `None`       | AA9 9   | AA    |
 | AA99 9AA | AA99     | 9AA     | AA    | AA99      | `None`       | AA99 9  | AA    |  
 
-- Fix common mistakes in UK postcode
+
 - Utilities to validate postcode
+- NEW: Validate postcode against ~1.8M UK postcodes from the ONS Postcode Directory (Nov 2022)
 
 
 ## Usage
@@ -39,8 +41,9 @@ pip install uk-postcodes-parsing
 >>> corpus = "this is a check to see if we can get post codes liek thia ec1r 1ub , and that e3 4ss. But also eh16 50y and ei412"          
 >>> postcodes = ukpostcode.parse_from_corpus(corpus)
 INFO:uk-postcodes-parsing:Found 2 postcodes in corpus
->>> print(postcodes)
-[Postcode(verified_against_postcode_io=True, fix_distance=0, original='ec1r 1ub', postcode='EC1R 1UB', incode='1UB', outcode='EC1R', area='EC', district='EC1', sub_district='EC1R', sector='EC1R 1', unit='UB'), Postcode(verified_against_postcode_io=True, fix_distance=0, original='e3 4ss', postcode='E3 4SS', incode='4SS', outcode='E3', area='E', district='E3', sub_district=None, sector='E3 4', unit='SS')]
+>>> postcodes
+[Postcode(is_in_ons_postcode_directory=True, fix_distance=0, original='ec1r 1ub', postcode='EC1R 1UB', incode='1UB', outcode='EC1R', area='EC', district='EC1', sub_district='EC1R', sector='EC1R 1', unit='UB'),
+ Postcode(is_in_ons_postcode_directory=True, fix_distance=0, original='e3 4ss', postcode='E3 4SS', incode='4SS', outcode='E3', area='E', district='E3', sub_district=None, sector='E3 4', unit='SS')]
 ```
 
 - Optional auto-correct: Attempt correcting common mistakes in postcodes such as reading "O" and "0" and vice-versa.
@@ -58,13 +61,13 @@ INFO:uk-postcodes-parsing:Postcode Fixed: 'eh16 50y' => 'EH16 5OY'
 ```python
 >>> from uk_postcodes_parsing import ukpostcode
 >>> ukpostcode.parse("EC1r 1ub")
-Postcode(verified_against_postcode_io=True, fix_distance=0, original='EC1r 1ub', postcode='EC1R 1UB', incode='1UB', outcode='EC1R', area='EC', district='EC1', sub_district='EC1R', sector='EC1R 1', unit='UB')
+Postcode(is_in_ons_postcode_directory=True, fix_distance=0, original='EC1r 1ub', postcode='EC1R 1UB', incode='1UB', outcode='EC1R', area='EC', district='EC1', sub_district='EC1R', sector='EC1R 1', unit='UB')
 ```
 
 ```python
 >>> ukpostcode.parse("EH16 50Y")
 INFO:uk-postcodes-parsing:Postcode Fixed: 'EH16 50Y' => 'EH16 5OY'
-Postcode(verified_against_postcode_io=False, fix_distance=1, original='EH16 50Y', postcode='EH16 5OY', incode='5OY', outcode='EH16', area='EH', district='EH16', sub_district=None, sector='EH16 5', unit='OY')
+Postcode(is_in_ons_postcode_directory=False, fix_distance=1, original='EH16 50Y', postcode='EH16 5OY', incode='5OY', outcode='EH16', area='EH', district='EH16', sub_district=None, sector='EH16 5', unit='OY')
 ```
 
 ```python
@@ -93,13 +96,23 @@ True
 'OW1 0AA'
 ```
 
+- Validate against ONS Postcode directory (1.7M+ UK postcode upto Nov 2022)
+
+```python
+>>> ukpostcode.is_in_ons_postcode_directory("EC1R 1UB") 
+True
+>>> ukpostcode.is_in_ons_postcode_directory("ec1r 1ub") # Expects normalised format (caps + space)
+False
+```
+
+
 # Postcode class definition
 
 ```python
 @dataclass(order=True)
 class Postcode:
     # Calculate post initialization
-    verified_against_postcode_io: bool = field(init=False)
+    is_in_ons_postcode_directory: bool = field(init=False)
     fix_distance: int = field(init=False)
     # raw text
     original: str 
@@ -116,7 +129,7 @@ class Postcode:
 ```
 
 - 2 fileds calculated after init of class
-  - `verified_against_postcode_io`: Check against [`api.postcodes.io/postcodes/`](https://postcodes.io/) which uses the [ONS Postcode Directory](https://geoportal.statistics.gov.uk/datasets/489c152010a3425f80a71dc3663f73e1/about)
+  - `is_in_ons_postcode_directory`: Checked against the [ONS Postcode Directory](https://geoportal.statistics.gov.uk/datasets/489c152010a3425f80a71dc3663f73e1/about)
   - `fix_distance`: A measure of number of characters changed from raw text via auto-fix to get a valid post code. 
     - E.g. `SW1A OAA` => `SW1A 0AA` has fix_distance=1. Where as, `SWIA OAA` => `SW1A 0AA` has fix_distance=2.
   - These fields are particularly helpful using `parse_from_corpus` with `attempt_fix=True` which might return many potential postcodes. These field can be used as proxy for confidence on which parsed postcodes are correct.
@@ -129,6 +142,6 @@ class Postcode:
 pytest tests/
 ```
 
-## Similar works
+## Similar work
 
-Most of this work is based on this JavaScript library: https://github.com/ideal-postcodes/postcode
+This package started as a Python replica of the postcode.io JavaScript library: https://github.com/ideal-postcodes/postcode
