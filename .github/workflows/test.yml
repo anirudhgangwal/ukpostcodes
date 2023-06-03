@@ -30,4 +30,4 @@ jobs:
           black src/uk_postcodes_parsing/ --check 
       - name: Test with pytest
         run: |
-          pytest
+          pytest -v

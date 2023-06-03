@@ -8,6 +8,7 @@ version = "0.0.4"
 authors = [
   { name="Anirudh Gangwal", email="angangwa@amazon.com" },
 ]
+dependencies = ["requests"]
 description = "A Python package to parge UK postcodes from text. Useful in applications such as OCR and IDP."
 readme = "README.md"
 requires-python = ">=3.7"
