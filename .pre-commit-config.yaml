@@ -8,7 +8,7 @@ repos:
   rev: 23.3.0
   hooks:
   - id: black
-    exclude: "scr/postcodes_nov_2022.py"
+    exclude: "src/postcodes_nov_2022.py"
 - repo: local
   hooks:
     - id: pytest-check
@@ -21,3 +21,6 @@ repos:
   rev: 1.7.5
   hooks:
     - id: bandit
+      args:
+      - -s
+      - B101

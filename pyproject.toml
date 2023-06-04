@@ -18,7 +18,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest", "pytest-cov"]
+test = ["pytest", "pytest-cov", "bandit[toml]"]
 lint = [ "black"]
 
 [project.urls]
@@ -32,3 +32,6 @@ addopts = [
 testpaths = [
     "tests/",
 ]
+
+[tool.bandit]
+skips = ["B101"]

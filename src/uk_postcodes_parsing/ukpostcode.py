@@ -81,7 +81,7 @@ class Postcode:
         outward = original[:-3].strip()
         formatted = f"{outward} {inward}"
 
-        fix_distance = sum(c1 != c2 for c1, c2 in zip(formatted, self.postcode))
+        fix_distance = sum(c1 != c2 for c1, c2 in zip(formatted, self.postcode)) * -1
 
         self.fix_distance = fix_distance
         self.is_in_ons_postcode_directory = is_in_ons_postcode_directory(self.postcode)
