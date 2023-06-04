@@ -31,6 +31,8 @@ FIXABLE_POSTCODE_CORPUS_REGEX = re.compile(
 
 SPECIAL_CASE_POSTCODES = ("GIR", "NPT", "BX", "BF")
 
+logger.debug("Imported POSTCODE_NOV_2022 with length: %s", len(POSTCODE_NOV_2022))
+
 
 @dataclass(order=True)
 class Postcode:
