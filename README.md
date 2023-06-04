@@ -3,7 +3,7 @@
 [![Test](https://github.com/anirudhgangwal/ukpostcodes/actions/workflows/test.yml/badge.svg)](https://github.com/anirudhgangwal/ukpostcodes/actions/workflows/test.yml) 
 [![Upload Python Package](https://github.com/anirudhgangwal/ukpostcodes/actions/workflows/python-publish.yml/badge.svg)](https://github.com/anirudhgangwal/ukpostcodes/actions/workflows/python-publish.yml)
 
-A Python package to parge UK postcodes from text. Useful in applications such as OCR and IDP.
+A Python package to parse UK postcodes from text. Useful in applications such as OCR and IDP.
 
 ## Install
 
