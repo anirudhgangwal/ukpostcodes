@@ -137,7 +137,7 @@ def parse(postcode, attempt_fix=True) -> Optional[Postcode]:
             logger.info("Postcode Fixed: '%s' => '%s'", postcode, fixed)
             return Postcode(**_parse(fixed), original=postcode)
         logger.error("Unable to fix postcode")
-    logger.error("Failed to parse postcode")
+    logger.error("Failed to parse postcode: %s", postcode)
     return None
 
 
