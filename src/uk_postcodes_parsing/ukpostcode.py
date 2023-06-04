@@ -29,6 +29,8 @@ FIXABLE_POSTCODE_CORPUS_REGEX = re.compile(
     r"[a-z01]{1,2}[0-9oi][a-z\d]?\s*[0-9oi][a-z01]{2}"
 )
 
+SPECIAL_CASE_POSTCODES = ("GIR", "NPT", "BX", "BF")
+
 
 @dataclass(order=True)
 class Postcode:
@@ -47,7 +49,8 @@ class Postcode:
     Additional attributes:
         is_in_ons_postcode_directory (bool): Whether the postcode was successfully verified against
             [ONS Postcode Directory](https://geoportal.statistics.gov.uk/datasets/489c152010a3425f80a71dc3663f73e1/about).
-        fix_distance (int): The number of characters that the postcode string was corrected by the `fix` function during parsing.
+        fix_distance (int): The number of characters that the postcode string was corrected by the
+            `fix` function during parsing.
     """
 
     # Calculate post initialization
@@ -104,8 +107,6 @@ def _parse(postcode: str) -> dict:
     Returns:
         dict: Parsed postcode.
     """
-    if postcode.upper().startswith("NPT"):  # Edge case logging
-        logger.warning("Found 'NPT' Newport postcode discontinued in 1984.")
     if not is_valid(postcode):
         return None
     return {
@@ -129,6 +130,8 @@ def parse(postcode, attempt_fix=True) -> Optional[Postcode]:
     Returns:
         Postcode: Parsed postcode.
     """
+    if postcode.strip().upper().startswith(SPECIAL_CASE_POSTCODES):  # Edge case logging
+        logger.info("Found special case postcode: %s", postcode)
     if is_valid(postcode):
         return Postcode(**_parse(postcode), original=postcode)
     if attempt_fix:
