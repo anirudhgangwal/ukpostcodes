@@ -17,16 +17,16 @@ from uk_postcodes_parsing.postcode_utils import (
     to_district,
     to_sub_district,
 )
-from uk_postcodes_parsing.fix import fix
+from uk_postcodes_parsing.fix import fix, fix_with_options
 from uk_postcodes_parsing.postcodes_nov_2022 import POSTCODE_NOV_2022
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("uk-postcodes-parsing")
+logger = logging.getLogger("uk-postcodes-parsing.ukpostcode")
 
 # Test for a valid postcode embedded in text
 POSTCODE_CORPUS_REGEX = re.compile(r"[a-z]{1,2}\d[a-z\d]?\s*\d[a-z]{2}", re.I)
 FIXABLE_POSTCODE_CORPUS_REGEX = re.compile(
-    r"[a-z01]{1,2}[0-9oi][a-z\d]?\s*[0-9oi][a-z01]{2}"
+    r"[a-z01]{1,2}[0-9oi][a-z\d]?\s*[0-9oi][a-z01]{2}", re.I
 )
 
 SPECIAL_CASE_POSTCODES = ("GIR", "NPT", "BX", "BF")
@@ -123,7 +123,28 @@ def _parse(postcode: str) -> dict:
     }
 
 
-def parse(postcode, attempt_fix=True) -> Optional[Postcode]:
+def parse_all_options(postcode) -> List[Postcode]:
+    """Parse possible postcodes
+
+    Args:
+        postcode (str): Postcode to parse. E.g. "EC1R 1UB".
+        attempt_fix (bool): Attempt to fix postcodes. Defaults to True.
+    Returns:
+        Postcode: Parsed postcode.
+    """
+    if postcode.strip().upper().startswith(SPECIAL_CASE_POSTCODES):  # Edge case logging
+        logger.info("Found special case postcode: %s", postcode)
+    if is_valid(postcode):
+        return [Postcode(**_parse(postcode), original=postcode)]
+    else:
+        fixed_list = fix_with_options(postcode)
+        return [
+            Postcode(**_parse(fixed_postcode), original=postcode)
+            for fixed_postcode in fixed_list
+        ]
+
+
+def parse(postcode: str, attempt_fix: bool = True) -> Optional[Postcode]:
     """Parse a postcode
 
     Args:
@@ -146,22 +167,38 @@ def parse(postcode, attempt_fix=True) -> Optional[Postcode]:
     return None
 
 
-def parse_from_corpus(text: str, attempt_fix=False) -> List[str]:
+def parse_from_corpus(
+    text: str, attempt_fix=False, try_all_fix_options=False
+) -> List[Postcode]:
     """Parse postcodes from a text corpus
 
     Args:
         text (str): Text corpus. E.g. "The postcode could be EC1R 1UB or EC1R IUB"
         attempt_fix (bool): Attempt to fix postcodes. Defaults to False.
+        try_all_fix_options (bool): If postcode is invalid and attempt_fix=True, this option
+            tries all possibilites to correct mistakes. Note this can create postcodes out of
+            invaid text in edge cases.
     Returns:
         List[Postcode]: List of parsed postcodes.
 
     """
+    if try_all_fix_options and not attempt_fix:
+        raise ValueError("attempt_fix must be true if try_all_fix_options is True")
+
     if attempt_fix:
-        postcodes = re.findall(FIXABLE_POSTCODE_CORPUS_REGEX, text.lower())
+        postcodes = re.findall(FIXABLE_POSTCODE_CORPUS_REGEX, text)
+        if try_all_fix_options:
+            postcodes = [parse_all_options(postcode) for postcode in postcodes]
+            postcodes = [item for sublist in postcodes for item in sublist]  # Flatten
+        else:
+            postcodes = [parse(postcode, attempt_fix=True) for postcode in postcodes]
+            postcodes = [postcode for postcode in postcodes if postcode is not None]
+        return postcodes
     else:
-        postcodes = re.findall(POSTCODE_CORPUS_REGEX, text.lower())
-    logger.info("Found %d postcodes in corpus", len(postcodes))
-    return list(map(parse, postcodes))
+        postcodes = re.findall(POSTCODE_CORPUS_REGEX, text)
+        postcodes = [parse(postcode, attempt_fix=False) for postcode in postcodes]
+        postcodes = [postcode for postcode in postcodes if postcode is not None]
+        return postcodes
 
 
 def is_in_ons_postcode_directory(postcode: str) -> bool:

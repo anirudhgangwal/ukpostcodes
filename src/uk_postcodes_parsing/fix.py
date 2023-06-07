@@ -1,4 +1,11 @@
 import re
+import logging
+from typing import List
+from uk_postcodes_parsing.postcode_utils import is_valid_outcode
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("uk-postcodes-parsing.fix")
+
 
 FIXABLE_REGEX = re.compile(
     r"^\s*[a-z01]{1,2}[0-9oi][a-z\d]?\s*[0-9oi][a-z01]{2}\s*$", re.I
@@ -73,6 +80,50 @@ def coerce(pattern: str, string: str) -> str:
         to_number(c) if target == "N" else to_letter(c) if target == "L" else c
         for c, target in zip(string, pattern)
     )
+
+
+def fix_with_options(s: str) -> List[str]:
+    """Attempts to fix a given postcode, covering all options.
+
+    Args:
+        s (str): The postcode to fix
+    Returns:
+        str: The fixed postcode
+    """
+    if not FIXABLE_REGEX.match(s):
+        return s
+    s = s.upper().strip().replace(r"\s+", "")
+    inward = s[-3:].strip()
+    outward = s[:-3].strip()
+    outcode_options = coerce_outcode_with_options(outward)
+    return [
+        f"{coerce_outcode(option)} {coerce_incode(inward)}"
+        for option in outcode_options
+    ]
+
+
+def coerce_outcode_with_options(i: str) -> List[str]:
+    """Coerce outcode, but cover all possibilities"""
+    if len(i) == 2:
+        return [coerce("LN", i)]
+    elif len(i) == 3:
+        outcodes = []
+        if is_valid_outcode(outcode := coerce("LNL", i)):
+            outcodes.append(outcode)
+        if is_valid_outcode(outcode := coerce("LNN", i)):
+            outcodes.append(outcode)
+        if is_valid_outcode(outcode := coerce("LLN", i)):
+            outcodes.append(outcode)
+        return list(set(outcodes))
+    elif len(i) == 4:
+        outcodes = []
+        if is_valid_outcode(outcode := coerce("LLNL", i)):
+            outcodes.append(outcode)
+        if is_valid_outcode(outcode := coerce("LLNN", i)):
+            outcodes.append(outcode)
+        return list(set(outcodes))
+    else:
+        return [i]
 
 
 def coerce_outcode(i: str) -> str:

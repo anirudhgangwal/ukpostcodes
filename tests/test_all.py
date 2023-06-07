@@ -151,7 +151,7 @@ def test_sort_by_fix_distance():
     lst = parse_from_corpus(corpus, attempt_fix=True)
     assert sorted(lst, reverse=True) == [
         Postcode(
-            original="ec1r 1ub",
+            original="EC1r 1ub",
             postcode="EC1R 1UB",
             incode="1UB",
             outcode="EC1R",
