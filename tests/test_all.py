@@ -195,3 +195,42 @@ def test_sort_by_fix_distance():
             unit="OO",
         ),
     ]
+
+
+def test_parse_from_corpus():
+    corpus = "sso 7hg HA0 1AQ"
+    lst = parse_from_corpus(corpus)
+    assert lst[0].is_in_ons_postcode_directory
+    assert lst[0].fix_distance == 0
+    assert lst[0].postcode == "HA0 1AQ"
+
+    corpus = "sso 7hg HA0 1AQ"
+    lst = parse_from_corpus(corpus, attempt_fix=True)
+    assert lst[0].is_in_ons_postcode_directory
+    assert lst[0].fix_distance == 0
+    assert lst[0].postcode == "HA0 1AQ"
+
+    corpus = "sso 7hg HAO 1AQ"
+    lst = parse_from_corpus(corpus, attempt_fix=True)
+    assert lst == []
+
+    corpus = "sso 7hg HA0 1AQ"
+    lst = parse_from_corpus(corpus, attempt_fix=True, try_all_fix_options=True)
+    assert lst[0].is_in_ons_postcode_directory
+    assert lst[0].fix_distance == -1
+    assert lst[0].postcode == "SS0 7HG"
+
+    assert lst[1].is_in_ons_postcode_directory
+    assert lst[1].fix_distance == 0
+    assert lst[1].postcode == "HA0 1AQ"
+
+    corpus = "OOO 4SS"
+    lst = [
+        postcode.postcode
+        for postcode in parse_from_corpus(
+            corpus, attempt_fix=True, try_all_fix_options=True
+        )
+    ]
+    assert "O00 4SS" in lst  # LNN
+    assert "OO0 4SS" in lst  # LLN
+    assert "O0O 4SS" in lst  # LNL
