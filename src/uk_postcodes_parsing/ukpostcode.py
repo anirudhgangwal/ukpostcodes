@@ -202,7 +202,7 @@ def parse_from_corpus(
 
 
 def is_in_ons_postcode_directory(postcode: str) -> bool:
-    """Check if the postcode is valid with postcodes.io
+    """Check if the postcode is valid with ons directory
 
     Args:
         postcode (str): The postcode to check

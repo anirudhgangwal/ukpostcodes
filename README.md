@@ -56,6 +56,19 @@ INFO:uk-postcodes-parsing:Found 3 postcodes in corpus
 INFO:uk-postcodes-parsing:Postcode Fixed: 'eh16 50y' => 'EH16 5OY'
 ```
 
+You can also do an undertermisitic postcode auto-correct where if there is more than one possible answer, all answers are returned.
+
+```python
+>>> postcodes = ukpostcode.parse_from_corpus("OOO 4SS",
+                             attempt_fix=True,
+                             try_all_fix_options=True
+                             )
+>> postcodes # "O00 4SS", "OO0 4SS", and "O0O 4SS"
+[Postcode(is_in_ons_postcode_directory=False, fix_distance=-2, original='OOO 4SS', postcode='O00 4SS', incode='4SS', outcode='O00', area='O', district='O00', sub_district=None, sector='O00 4', unit='SS'),
+ Postcode(is_in_ons_postcode_directory=False, fix_distance=-1, original='OOO 4SS', postcode='OO0 4SS', incode='4SS', outcode='OO0', area='OO', district='OO0', sub_district=None, sector='OO0 4', unit='SS'),
+ Postcode(is_in_ons_postcode_directory=False, fix_distance=-1, original='OOO 4SS', postcode='O0O 4SS', incode='4SS', outcode='O0O', area='O', district='O0', sub_district='O0O', sector='O0O 4', unit='SS')]
+```
+
 - Parsing
 
 ```python
