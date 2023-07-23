@@ -187,6 +187,11 @@ class Postcode:
 pytest tests/
 ```
 
+# Updating this library with newer version of ONS postcode directory
+
+This library has been updated with May 2023 ONS postcode directory. To update this to a newer, version, see: [process_onspd.ipynb](scripts/process_onspd.ipynb).
+
+
 ## Similar work
 
 This package started as a Python replica of the postcode.io JavaScript library: https://github.com/ideal-postcodes/postcode

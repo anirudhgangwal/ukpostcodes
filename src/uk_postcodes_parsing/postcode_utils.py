@@ -4,8 +4,6 @@ postcode_utils.py: Utilities for working with postcodes.
 import re
 from typing import Union
 
-from uk_postcodes_parsing.postcodes_nov_2022 import POSTCODE_NOV_2022
-
 
 # Tests for district
 DISTRICT_SPLIT_REGEX = re.compile(r"^([a-z]{1,2}\d)([a-z])$", re.I)
