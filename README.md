@@ -29,7 +29,7 @@ pip install uk-postcodes-parsing
 
 
 - Utilities to validate postcode
-- NEW: Validate postcode against ~1.8M UK postcodes from the ONS Postcode Directory (Nov 2022)
+- Updated to May 2023: Validate postcode against ~1.8M UK postcodes from the ONS Postcode Directory
 
 
 ## Usage
